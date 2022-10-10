@@ -9,7 +9,7 @@ function MovieCard({ title, release_date, poster_path, vote_count, overview, vot
 
         <div className='movie'>
             <div>
-                <p>{release_date}</p>
+                <p>Rating: {vote_average}</p>
             </div>
 
             <div onClick={() => setmodalOpen(true)} style={{cursor:"pointer"}}>
@@ -25,7 +25,7 @@ function MovieCard({ title, release_date, poster_path, vote_count, overview, vot
                 onRequestClose={() => setmodalOpen(false)}
                 style={{
                     content: {
-                        margin: "10px",
+                        margin: "auto 200px",
                         display: "grid",
                         justifyItems: "center",
                         textAlign: "center",
@@ -37,14 +37,12 @@ function MovieCard({ title, release_date, poster_path, vote_count, overview, vot
                     }
                 }}
             >
-                <h2 style={{margin: "10px", marginBottom: 0}}>Title: {title}</h2>
+                <h2 style={{margin: "10px", marginBottom: 0}}>{title}</h2>
                 <p>Date Released: {release_date}</p>
                 <img style={{width: "310px", margin: "20px", borderRadius: "10px"}} src={poster_path !== 'N/A' ? "https://image.tmdb.org/t/p/original" + poster_path : 'https://via.placeholder.com/400'} alt={title} />
-                <p style={{width: "60%"}}>Description: {overview}</p>
-                <p style={{marginTop: "20px"}}>Rating: {vote_average}</p>
-                <p style={{}}>Vote Count: {vote_count}</p>
-                <p>{adult == true ? '18+' : 'Family Safe'}</p>
-                <button style={{margin: "20px"}} onClick={() => setmodalOpen(false)}>Close</button>
+                <p style={{width: "80%"}}>{overview}</p>
+                <p>Rating: {vote_average}<br/>Vote Count: {vote_count}<br/>{adult == true ? 'Strict 18+' : 'Family Safe'}</p>
+                <button className="btn btn-light" onClick={() => setmodalOpen(false)}>Close</button>
             </Modal>
         </div>
     )
