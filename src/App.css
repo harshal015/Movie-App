@@ -22,6 +22,10 @@ body {
   min-height: 100%;
 }
 
+h2 {
+  color: azure;
+}
+
 .app {
   padding: 4rem;
 

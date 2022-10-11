@@ -11,22 +11,33 @@ const App = () => {
     const [page, setPage] = useState(1);
     const [pages, setPages] = useState();
     const [search, setSearch] = useState(false)
+    const [err, setErr] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const showMovies = async () => {
-        const response = await fetch(`https://movie-task.vercel.app/api/popular?page=${page}`)
-        const res = await response.json();
+        setLoading(true);
+        try {
+            const response = await fetch(`https://movie-task.vercel.app/api/popular?page=${page}`)
+            const res = await response.json();
 
-        setMovies(res.data.results);
-        setPages(res.data.total_pages);
+            setMovies(res.data.results);
+            setPages(res.data.total_pages);
+            setLoading(false);
+        }
+        catch (e) {
+            setErr(true);
+            setLoading(false);
+        }
     }
 
     const searchMovies = async (term) => {
+        setLoading(true)
         const response = await fetch(`https://movie-task.vercel.app/api/search?page=${page}&query=${term}`)
         const res = await response.json();
-
-        setSearch(true);
-        setPages(res.data.total_pages);
         setMovies(res.data.results);
+
+        setPages(res.data.total_pages);
+        setLoading(false)
     }
 
     useEffect(() => {
@@ -56,21 +67,23 @@ const App = () => {
 
 
     return (
+        loading == false ? 
         <div className='app'>
-            <h1>MoviesAdda</h1>
+            <h1 style={{ cursor: "pointer" }} onClick={() => {showMovies(); setSearch(false); setPage(1)}}>MoviesAdda</h1>
 
             <div className='search'>
                 <input
                     placeholder='Search for Movies'
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
+                    onKeyDown={(e) => {e.key == 'Enter' && searchMovies(searchTerm); setPage(1); setSearch(true)}}
                 />
                 <img src={searchIcon} alt='search'
-                    onClick={() => { searchMovies(searchTerm); setPage(1); }}
+                    onClick={() => { searchMovies(searchTerm); setPage(1); setSearch(true)}}
                 />
             </div>
 
-            {pages != 0 && <> <div style={customStyle1}>
+            {err == false && pages != 0 && <> <div style={customStyle1}>
                 <button className='btn btn-secondary' style={{ margin: "10px" }} onClick={() => { if (page > 1) setPage(page - 1) }}>PREV</button>
                 <p style={customStyle2}>Page {page} of {pages}</p>
                 <button className='btn btn-secondary' style={{ margin: "10px" }} onClick={() => { if (page < pages) setPage(page + 1) }}>NEXT</button>
@@ -91,13 +104,15 @@ const App = () => {
                 }
             </div>
 
+            {err == true && pages != 0 && <h2>Oh No! Looks like there's some issue :(</h2>}
+
             {pages != 0 ? <div style={customStyle1}>
                 <button className='btn btn-secondary' style={{ margin: "10px" }} onClick={(e) => { if (page > 1) setPage(page - 1) }}>PREV</button>
                 <p style={customStyle2}>Page {page} of {pages}</p>
                 <button className='btn btn-secondary' style={{ margin: "10px" }} onClick={(e) => { if (page < pages) setPage(page + 1) }}>NEXT</button>
-            </div> : <><h2 style={{color:"Azure"}}>Oh! Nothing Found</h2><h2 style={{color:"Azure"}}>Check the entered words again!</h2></>}
+            </div> : <><h2>Oh! Nothing Found</h2><h2>Check the entered words again!</h2></>}
 
-        </div>
+        </div> : <h1 style={{position: "absolute", top:"43%", right: "43%"}}>Loading..</h1>
     )
 }
 
