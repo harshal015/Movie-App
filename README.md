@@ -14,3 +14,5 @@ The following extra features are included in this app.
 - Pagination functionality
 - Error State and Loading State
 - Responsive UI
+
+See it live - https://harshal2502.github.io/Movie-App/
